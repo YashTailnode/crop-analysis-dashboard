@@ -20,18 +20,20 @@ DF_COLUMNS = [
     "Production Units",
     "Yield",
 ]
-# print(df['year'].unique())
+
+# Dropdown filter options
 unique_year_options = df["Year"].unique()
 unique_state_options = df["State"].unique()
 unique_crop_options = df["Crop"].unique()
 unique_district_options = df["District"].unique()
 unique_season_options = df["Season"].unique()
-# //convert tabs to horizontal tabs
+
+# Tabs
 tab1, tab2 = st.tabs(["Dashboard", "Map View"], width="stretch")
-
-
 with tab1:
     st.header("Crop Production Yeild Dashboard")
+
+    # Filters
     years = st.multiselect(
         "Select Year(s)",
         unique_year_options,
@@ -39,13 +41,11 @@ with tab1:
             "2001-02",
             "2002-03",
             "2003-04",
-            #  '2004-05', '2005-06', '2006-07', '2007-08', '2008-09', '2009-10', '2010-11', '2011-12', '2012-13', '2013-14', '2014-15', '2015-16', '2016-17', '2017-18', '2018-19', '2019-20', '2020-21'
         ],
     )
     crops = st.multiselect(
         "Select Crop(s)",
         unique_crop_options,
-        # default=["Wheat"],
     )
     states = st.multiselect(
         "Select State(s)",
@@ -55,12 +55,10 @@ with tab1:
     districts = st.multiselect(
         "Select District(s)",
         df[df["State"].isin(states)]["District"].unique(),
-        # default=["2001-02"],
     )
     seasons = st.multiselect(
         "Select Season(s)",
         unique_season_options,
-        # default=["2001-02"],
     )
 
     # filter dataframe based on selections
@@ -96,7 +94,6 @@ with tab1:
             production_yield_over_years["Yield"]
             / production_yield_over_years["Yield"].max()
         )
-        # st.dataframe(production_yield_over_years)
         st.bar_chart(
             production_yield_over_years,
             x="Year",
@@ -116,7 +113,6 @@ with tab1:
         top_10_production_districts = production_for_districts.sort_values(
             "Production", ascending=False
         ).head(10)
-        # st.dataframe(production_for_districts)
         st.bar_chart(
             top_10_production_districts,
             x="District",
@@ -130,13 +126,6 @@ with tab1:
     st.subheader("Yield Vs Production Area")
 
     if not df_filtered.empty:
-        # production_for_districts = (
-        #     df_filtered.groupby("District")["Production"].sum().reset_index()
-        # )
-        # top_10_production_districts = production_for_districts.sort_values(
-        #     "Production", ascending=False
-        # ).head(10)
-        # st.dataframe(production_for_districts)
         yeild_production_area = df_filtered[["Area", "Yield"]]
         st.scatter_chart(
             yeild_production_area,
@@ -156,28 +145,13 @@ with tab1:
             + " - "
             + yearly_crop_production["Year"].astype(str)
         )
-        # production_yield_over_years["normalized_production"] = (
-        #     production_yield_over_years["Production"]
-        #     / production_yield_over_years["Production"].max()
-        # )
-        # production_yield_over_years["normalized_yield"] = (
-        #     production_yield_over_years["Yield"]
-        #     / production_yield_over_years["Yield"].max()
-        # )
-        # st.dataframe(yearly_crop_production)
         st.bar_chart(
             yearly_crop_production,
             x="crop_year",
             y=["Production"],
-            # color=["#FF0000", "#0000FF"],
         )
     else:
         st.write("No data!")
 
-    # st.image("https://static.streamlit.io/examples/cat.jpg", width=200)
 with tab2:
     st.header("Crop Production Yeild Dashboard")
-    # st.image("https://static.streamlit.io/examples/dog.jpg", width=200)
-# with tab3:
-# st.header("An owl")
-# st.image("https://static.streamlit.io/examples/owl.jpg", width=200)
