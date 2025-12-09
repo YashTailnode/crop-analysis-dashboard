@@ -79,7 +79,7 @@ with tab1:
             & (df["Season"].isin(seasons) if seasons else True)
         ]
 
-    # MATRIX
+    # *****************CORRELATION MATRIX**************************
     corr_cols = ["Area", "Production", "Yield"]
     correlation = df_filtered[corr_cols].corr()
     st.subheader(f"Correlation Matrix between {', '.join(corr_cols)}")
@@ -87,10 +87,10 @@ with tab1:
         st.dataframe(correlation)
     else:
         st.write("No data!")
+        
 
-    # PRODUCTION , YEILD OVER YEARS
+    # *****************TIME SERIES GRAPHS*******************
     st.subheader("Time Series: Production, Yield, Area Over Years")
-
     if not df_filtered.empty:
         production_yield_over_years = (
             df_filtered.groupby("Year")[["Production", "Yield", "Area"]]
@@ -112,17 +112,16 @@ with tab1:
         st.line_chart(
             production_yield_over_years,
             x="Year",
-            y=["normalized_production", "normalized_yield","normalized_area"],
+            y=["normalized_production", "normalized_yield", "normalized_area"],
             color=["#FF0000", "#0000FF", "#00FF00"],
         )
     else:
         st.write("No data!")
+    # -----------------------------
 
     st.subheader("Time Series: Area Over Years")
-
     if not df_filtered.empty:
         area_over_years = df_filtered.groupby("Year")[["Area"]].sum().reset_index()
-
         st.line_chart(
             area_over_years,
             x="Year",
@@ -131,9 +130,9 @@ with tab1:
         )
     else:
         st.write("No data!")
+    # -----------------------
 
     st.subheader("Time Series: Production Over Years")
-
     if not df_filtered.empty:
         production_over_years = (
             df_filtered.groupby("Year")[["Production"]].sum().reset_index()
@@ -147,9 +146,9 @@ with tab1:
         )
     else:
         st.write("No data!")
+        # --------------
 
     st.subheader("Time Series: Yield Over Years")
-
     if not df_filtered.empty:
         yield_over_years = df_filtered.groupby("Year")[["Yield"]].sum().reset_index()
 
@@ -162,7 +161,8 @@ with tab1:
     else:
         st.write("No data!")
 
-    # TOP Producting Districts
+
+    # *****************TOP PRODUCING DISTRICTS******************
     st.subheader("TOP Producing Districts")
 
     if not df_filtered.empty:
@@ -181,9 +181,9 @@ with tab1:
     else:
         st.write("No data!")
 
-    # Yeild Vs Area
-    st.subheader("Yield Vs Production Area")
 
+    # ****************YEILD Vs AREA**************
+    st.subheader("Yield Vs Production Area")
     if not df_filtered.empty:
         yeild_production_area = df_filtered[["Area", "Yield"]]
         st.scatter_chart(
@@ -192,7 +192,8 @@ with tab1:
     else:
         st.write("No data!")
 
-    # CROPWISE YEARLY PRODUCTION
+
+    # ***********************CROPWISE YEARLY PRODUCTION****************
     st.subheader("Crop-wise Production(Yearly)")
 
     if not df_filtered.empty:
