@@ -1,11 +1,21 @@
 import streamlit as st
 import pandas as pd
 from numpy.random import default_rng as rng
+import json
 
 
 df = pd.read_csv(
     "/home/yash/Repositories/crop-analysis-dashboard/data/India Agriculture Crop Production.csv"
 )
+# load json data
+# with open(
+#     "/home/yash/Repositories/crop-analysis-dashboard/data/india_state_geo.json", "r"
+# ) as f:
+#     plot = f.read()
+#     data = json.loads(plot)
+#     df_plot = pd.json_normalize(data)
+
+# st.dataframe(df_plot)
 
 
 DF_COLUMNS = [
