@@ -62,13 +62,22 @@ with tab1:
     )
 
     # filter dataframe based on selections
-    df_filtered = df[
-        (df["Year"].isin(years) if years else True)
-        & (df["Crop"].isin(crops) if crops else True)
-        & (df["State"].isin(states) if states else True)
-        & (df["District"].isin(districts) if districts else True)
-        & (df["Season"].isin(seasons) if seasons else True)
-    ]
+    if (
+        (not years)
+        and (not crops)
+        and (not states)
+        and (not districts)
+        and (not seasons)
+    ):
+        df_filtered = df.copy()
+    else:
+        df_filtered = df[
+            (df["Year"].isin(years) if years else True)
+            & (df["Crop"].isin(crops) if crops else True)
+            & (df["State"].isin(states) if states else True)
+            & (df["District"].isin(districts) if districts else True)
+            & (df["Season"].isin(seasons) if seasons else True)
+        ]
 
     # MATRIX
     corr_cols = ["Area", "Production", "Yield"]
@@ -80,11 +89,13 @@ with tab1:
         st.write("No data!")
 
     # PRODUCTION , YEILD OVER YEARS
-    st.subheader("Production and Yield VS Years")
+    st.subheader("Time Series: Production, Yield, Area Over Years")
 
     if not df_filtered.empty:
         production_yield_over_years = (
-            df_filtered.groupby("Year")[["Production", "Yield"]].sum().reset_index()
+            df_filtered.groupby("Year")[["Production", "Yield", "Area"]]
+            .sum()
+            .reset_index()
         )
         production_yield_over_years["normalized_production"] = (
             production_yield_over_years["Production"]
@@ -94,11 +105,59 @@ with tab1:
             production_yield_over_years["Yield"]
             / production_yield_over_years["Yield"].max()
         )
-        st.bar_chart(
+        production_yield_over_years["normalized_area"] = (
+            production_yield_over_years["Area"]
+            / production_yield_over_years["Area"].max()
+        )
+        st.line_chart(
             production_yield_over_years,
             x="Year",
-            y=["normalized_production", "normalized_yield"],
-            color=["#FF0000", "#0000FF"],
+            y=["normalized_production", "normalized_yield","normalized_area"],
+            color=["#FF0000", "#0000FF", "#00FF00"],
+        )
+    else:
+        st.write("No data!")
+
+    st.subheader("Time Series: Area Over Years")
+
+    if not df_filtered.empty:
+        area_over_years = df_filtered.groupby("Year")[["Area"]].sum().reset_index()
+
+        st.line_chart(
+            area_over_years,
+            x="Year",
+            y=["Area"],
+            color=["#FF0000"],
+        )
+    else:
+        st.write("No data!")
+
+    st.subheader("Time Series: Production Over Years")
+
+    if not df_filtered.empty:
+        production_over_years = (
+            df_filtered.groupby("Year")[["Production"]].sum().reset_index()
+        )
+
+        st.line_chart(
+            production_over_years,
+            x="Year",
+            y=["Production"],
+            color=["#FF0000"],
+        )
+    else:
+        st.write("No data!")
+
+    st.subheader("Time Series: Yield Over Years")
+
+    if not df_filtered.empty:
+        yield_over_years = df_filtered.groupby("Year")[["Yield"]].sum().reset_index()
+
+        st.line_chart(
+            yield_over_years,
+            x="Year",
+            y=["Yield"],
+            color=["#FF0000"],
         )
     else:
         st.write("No data!")
@@ -134,7 +193,7 @@ with tab1:
         st.write("No data!")
 
     # CROPWISE YEARLY PRODUCTION
-    st.subheader("Crop-wise Production")
+    st.subheader("Crop-wise Production(Yearly)")
 
     if not df_filtered.empty:
         yearly_crop_production = (
