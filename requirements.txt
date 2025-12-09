@@ -1,0 +1,10 @@
+streamlit
+pandas
+numpy
+matplotlib
+pillow
+# searborn
+xgboost
+plotly
+scikit-learn
+kagglehub
